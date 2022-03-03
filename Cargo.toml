@@ -1,0 +1,24 @@
+[package]
+name = "wineventhook"
+version = "0.1.0"
+description = "A rusty wrapper over SetWinEventHook and UnhookWinEvent."
+readme = "README.md"
+repository = "https://github.com/OpenByteDev/wineventhook" 
+homepage = "https://github.com/OpenByteDev/wineventhook"
+documentation = "https://docs.rs/wineventhook"
+license = "MIT"
+authors = ["OpenByte <development.openbyte@gmail.com>"]
+edition = "2021"
+categories = ["os", "os::windows-apis", "accessibility"]
+keywords = ["window", "event", "hook", "UnhookWinEvent", "SetWinEventHook"]
+
+[dependencies]
+winapi = { version = "0.3", features = ["winuser", "winbase", "sysinfoapi"], default-features = false }
+num_enum = { version = "0.5", default-features = false }
+bitflags = { version = "1.3", default-features = false }
+async-thread = { version = "0.1", default-features = false }
+cstr = { version = "0.2", default-features = false }
+tokio = { version = "1.17", features = ["sync"], default-features = false }
+
+[dev-dependencies]
+tokio = { version = "1.17", features = ["rt", "rt-multi-thread", "macros"], default-features = false }
