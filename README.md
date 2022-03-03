@@ -4,7 +4,7 @@
 [![crates.io](https://img.shields.io/crates/v/wineventhook.svg)](https://crates.io/crates/wineventhook)
 [![Documentation](https://docs.rs/wineventhook/badge.svg)](https://docs.rs/wineventhook)
 [![dependency status](https://deps.rs/repo/github/openbytedev/wineventhook-rs/status.svg)](https://deps.rs/repo/github/openbytedev/wineventhook-rs)
-[![MIT](https://img.shields.io/crates/l/wineventhook.svg)](https://github.com/OpenByteDev/wineventhook/blob/master/LICENSE)
+[![MIT](https://img.shields.io/crates/l/wineventhook.svg)](https://github.com/OpenByteDev/wineventhook-rs/blob/master/LICENSE)
 
 A rusty wrapper over SetWinEventHook and UnhookWinEvent.
 
