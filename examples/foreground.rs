@@ -5,7 +5,7 @@ use std::{
 
 use winapi::{
     shared::windef::HWND,
-    um::winuser::{GetWindowTextLengthW, GetWindowTextW},
+    um::{winuser::{GetWindowTextLengthW, GetWindowTextW}, errhandlingapi::{SetLastError, GetLastError}},
 };
 use wineventhook::{raw_event, AccessibleObjectId, EventFilter, MaybeKnown, WindowEventHook};
 
@@ -38,19 +38,25 @@ async fn main() {
 }
 
 fn get_window_text_length(window: HWND) -> io::Result<usize> {
+    unsafe { SetLastError(0) };
     let result = unsafe { GetWindowTextLengthW(window) };
-    if result != 0 {
-        Ok(result as _)
-    } else {
+    if result == 0 && unsafe { GetLastError() } != 0 {
         Err(io::Error::last_os_error())
+    } else {
+        Ok(result as _)
     }
 }
 
 fn get_window_text(window: HWND) -> io::Result<String> {
-    let mut text = vec![0u16; get_window_text_length(window)? + 1];
+    let length = get_window_text_length(window)?;
+    if length == 0 {
+        return Ok(String::new());
+    }
+    
+    let mut text = vec![0u16; length + 1];
     let result = unsafe { GetWindowTextW(window, text.as_mut_ptr(), text.len() as i32) };
     if result != 0 {
-        let text = String::from_utf16_lossy(&text);
+        let text = String::from_utf16_lossy(&text[..text.len()-1]);
         Ok(text)
     } else {
         Err(io::Error::last_os_error())
