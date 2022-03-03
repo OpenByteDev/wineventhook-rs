@@ -51,10 +51,6 @@ jobs:
           override: true
     - name: Generate documentation
       run: cargo doc --all-features
-    - name: Install cargo-deadlinks
-      run: cargo install cargo-deadlinks
-    - name: Check dead links in doc
-      run: cargo deadlinks
 
   clippy:
     runs-on: ${{ matrix.os }}
