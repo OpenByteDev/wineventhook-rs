@@ -1,11 +1,15 @@
 use std::{
     io,
-    ptr::{self, NonNull}, num::NonZeroUsize,
+    num::NonZeroUsize,
+    ptr::{self, NonNull},
 };
 
 use winapi::{
     shared::windef::HWND,
-    um::{winuser::{GetWindowTextLengthW, GetWindowTextW}, errhandlingapi::{SetLastError, GetLastError}},
+    um::{
+        errhandlingapi::{GetLastError, SetLastError},
+        winuser::{GetWindowTextLengthW, GetWindowTextW},
+    },
 };
 use wineventhook::{raw_event, AccessibleObjectId, EventFilter, MaybeKnown, WindowEventHook};
 
@@ -13,7 +17,7 @@ use wineventhook::{raw_event, AccessibleObjectId, EventFilter, MaybeKnown, Windo
 async fn main() {
     let (event_tx, mut event_rx) = tokio::sync::mpsc::unbounded_channel();
     let hook = WindowEventHook::hook(
-        *EventFilter::default().event(raw_event::SYSTEM_FOREGROUND),
+        EventFilter::default().event(raw_event::SYSTEM_FOREGROUND),
         event_tx,
     )
     .await

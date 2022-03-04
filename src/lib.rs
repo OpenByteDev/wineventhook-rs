@@ -11,6 +11,7 @@
     clippy::must_use_candidate,
     clippy::inconsistent_struct_constructor,
     clippy::wrong_self_convention,
+    clippy::new_without_default,
     rustdoc::broken_intra_doc_links,
     rustdoc::private_intra_doc_links
 )]
@@ -74,7 +75,7 @@ mod tests {
     async fn recv_object_create_on_window_create() {
         let (event_tx, mut event_rx) = tokio::sync::mpsc::unbounded_channel();
         let hook = WindowEventHook::hook(
-            *EventFilter::default()
+            EventFilter::default()
                 .event(raw_event::OBJECT_CREATE)
                 .skip_own_process(false)
                 .skip_own_thread(false),

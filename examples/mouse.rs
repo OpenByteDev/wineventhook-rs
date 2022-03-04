@@ -7,7 +7,7 @@ use wineventhook::{raw_event, AccessibleObjectId, EventFilter, MaybeKnown, Windo
 async fn main() {
     let (event_tx, mut event_rx) = tokio::sync::mpsc::unbounded_channel();
     let hook = WindowEventHook::hook(
-        *EventFilter::default().event(raw_event::OBJECT_LOCATIONCHANGE),
+        EventFilter::default().event(raw_event::OBJECT_LOCATIONCHANGE),
         event_tx,
     )
     .await
