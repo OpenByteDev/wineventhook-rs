@@ -1,7 +1,7 @@
 use std::{io, mem::MaybeUninit};
 
 use winapi::um::winuser::GetCursorPos;
-use wineventhook::{raw_event, AccessibleObjectId, EventFilter, MaybeKnown, WindowEventHook};
+use wineventhook::{raw_event, AccessibleObjectId, EventFilter, WindowEventHook};
 
 #[tokio::main]
 async fn main() {
@@ -14,10 +14,7 @@ async fn main() {
     .unwrap();
 
     while let Some(event) = event_rx.recv().await {
-        if matches!(
-            event.object_type(),
-            MaybeKnown::Known(AccessibleObjectId::Cursor)
-        ) {
+        if event.object_type() == AccessibleObjectId::Cursor {
             let mut pos = MaybeUninit::uninit();
             let result = unsafe { GetCursorPos(pos.as_mut_ptr()) };
             if result != 0 {

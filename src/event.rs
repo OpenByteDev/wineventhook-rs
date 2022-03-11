@@ -227,6 +227,51 @@ pub enum MaybeKnown<T> {
     Unknown(i32),
 }
 
+impl<T> MaybeKnown<T> {
+    /// Returns `true` if the event is known.
+    #[must_use]
+    pub fn is_known(&self) -> bool {
+        matches!(self, Self::Known(_))
+    }
+
+    /// Returns `true` if the event is unknown.
+    #[must_use]
+    pub fn is_unknown(&self) -> bool {
+        matches!(self, Self::Unknown(_))
+    }
+
+    /// Returns the event if it is known.
+    #[must_use]
+    pub fn known(&self) -> Option<&T> {
+        match self {
+            Self::Known(value) => Some(value),
+            _ => None,
+        }
+    }
+
+    /// Returns the code of the event if it is unknown.
+    #[must_use]
+    pub fn unknown(&self) -> Option<i32> {
+        match self {
+            Self::Unknown(value) => Some(*value),
+            _ => None,
+        }
+    }
+}
+
+impl<T> MaybeKnown<T>
+where
+    T: Into<i32>,
+{
+    /// Returns the underlying event code.
+    pub fn code(self) -> i32 {
+        match self {
+            MaybeKnown::Known(value) => value.into(),
+            MaybeKnown::Unknown(value) => value,
+        }
+    }
+}
+
 impl<T> From<i32> for MaybeKnown<T>
 where
     T: TryFrom<i32>,
@@ -244,9 +289,18 @@ where
     T: Into<i32>,
 {
     fn from(value: MaybeKnown<T>) -> Self {
-        match value {
-            MaybeKnown::Known(value) => value.into(),
-            MaybeKnown::Unknown(value) => value,
+        value.code()
+    }
+}
+
+impl<T> PartialEq<T> for MaybeKnown<T>
+where
+    T: PartialEq,
+{
+    fn eq(&self, other: &T) -> bool {
+        match self {
+            MaybeKnown::Known(value) => value == other,
+            MaybeKnown::Unknown(_) => false,
         }
     }
 }

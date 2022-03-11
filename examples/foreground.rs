@@ -11,7 +11,7 @@ use winapi::{
         winuser::{GetWindowTextLengthW, GetWindowTextW},
     },
 };
-use wineventhook::{raw_event, AccessibleObjectId, EventFilter, MaybeKnown, WindowEventHook};
+use wineventhook::{raw_event, AccessibleObjectId, EventFilter, WindowEventHook};
 
 #[tokio::main]
 async fn main() {
@@ -24,10 +24,7 @@ async fn main() {
     .unwrap();
 
     while let Some(event) = event_rx.recv().await {
-        if matches!(
-            event.object_type(),
-            MaybeKnown::Known(AccessibleObjectId::Window)
-        ) {
+        if event.object_type() == AccessibleObjectId::Window {
             let title = get_window_text(
                 event
                     .window_handle()
