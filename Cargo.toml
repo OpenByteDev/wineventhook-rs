@@ -18,7 +18,7 @@ num_enum = { version = "0.5", default-features = false }
 bitflags = { version = "1.3", default-features = false }
 async-thread = { version = "0.1", default-features = false }
 cstr = { version = "0.2", default-features = false }
-tokio = { version = "1.17", features = ["sync"], default-features = false }
+tokio = { version = "1.18", features = ["sync"], default-features = false }
 
 [dev-dependencies]
 tokio = { version = "1.17", features = ["rt", "rt-multi-thread", "macros"], default-features = false }
