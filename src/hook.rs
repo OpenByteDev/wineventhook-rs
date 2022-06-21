@@ -1,4 +1,4 @@
-use std::{fmt::Debug, hash::Hash, io, cell::OnceCell, num::NonZeroU32, ops::Range, ptr};
+use std::{fmt::Debug, hash::Hash, io, cell::OnceCell, num::NonZeroU32, ops::Range, ptr, mem::MaybeUninit};
 
 use winapi::{
     shared::{
@@ -7,11 +7,11 @@ use winapi::{
     },
     um::{
         winnt::LONG,
-        winuser::{SetWinEventHook, UnhookWinEvent},
+        winuser::{SetWinEventHook, UnhookWinEvent, GetWindowThreadProcessId},
     },
 };
 
-use crate::{message_loop::run_dummy_message_loop, raw_event, RawWindowEvent, WindowEvent};
+use crate::{message_loop::run_dummy_message_loop, raw_event, RawWindowEvent, WindowEvent, RawWindowHandle};
 
 thread_local! {
     static HOOK_EVENT_TX: OnceCell<(tokio::sync::mpsc::UnboundedSender<WindowEvent>, EventPredicate)> = OnceCell::new();
@@ -215,6 +215,15 @@ impl EventFilter {
         self
     }
 
+    /// Only include events from the thread and process of the given window.
+    #[must_use]
+    pub fn window(self, window: RawWindowHandle) -> Self {
+        let window_info = WindowThreadProcess::from_handle(window);
+        self
+            .thread(window_info.thread)
+            .process(window_info.process)
+    }
+
     /// Include events from all processes.
     /// To receive events from the current process `skip_own_process` must be set to false.
     #[must_use]
@@ -236,6 +245,24 @@ impl EventFilter {
     pub fn predicate(mut self, predicate: EventPredicate) -> EventFilter {
         self.predicate.set(predicate);
         self
+    }
+}
+
+struct WindowThreadProcess {
+    process: NonZeroU32,
+    thread: NonZeroU32,
+}
+
+impl WindowThreadProcess {
+    fn new(process: NonZeroU32, thread: NonZeroU32) -> Self {
+        Self { process, thread }
+    }
+
+    fn from_handle(window: RawWindowHandle) -> Self {
+        let mut process_id = MaybeUninit::uninit();
+        let thread_id = unsafe { GetWindowThreadProcessId(window, process_id.as_mut_ptr()) };
+        let process_id = unsafe { process_id.assume_init() };
+        Self::new(NonZeroU32::new(process_id).unwrap(), NonZeroU32::new(thread_id).unwrap())
     }
 }
 
