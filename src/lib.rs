@@ -1,5 +1,4 @@
 #![cfg(windows)]
-#![feature(once_cell)]
 #![warn(
     unsafe_op_in_unsafe_fn,
     missing_docs,
