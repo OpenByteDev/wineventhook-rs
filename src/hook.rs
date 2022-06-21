@@ -1,4 +1,4 @@
-use std::{fmt::Debug, hash::Hash, io, lazy::OnceCell, num::NonZeroU32, ops::Range, ptr};
+use std::{fmt::Debug, hash::Hash, io, cell::OnceCell, num::NonZeroU32, ops::Range, ptr};
 
 use winapi::{
     shared::{
@@ -14,7 +14,7 @@ use winapi::{
 use crate::{message_loop::run_dummy_message_loop, raw_event, RawWindowEvent, WindowEvent};
 
 thread_local! {
-    static HOOK_EVENT_TX: std::lazy::OnceCell<(tokio::sync::mpsc::UnboundedSender<WindowEvent>, EventPredicate)> = OnceCell::new();
+    static HOOK_EVENT_TX: OnceCell<(tokio::sync::mpsc::UnboundedSender<WindowEvent>, EventPredicate)> = OnceCell::new();
 }
 
 extern "system" fn win_event_hook_callback(
