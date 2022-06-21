@@ -1,4 +1,4 @@
-use std::{fmt::Debug, hash::Hash, io, cell::OnceCell, num::NonZeroU32, ops::Range, ptr, mem::MaybeUninit};
+use std::{fmt::Debug, hash::Hash, io, cell::OnceCell, mem::MaybeUninit, num::NonZeroU32, ops::Range, ptr};
 
 use winapi::{
     shared::{
@@ -7,11 +7,13 @@ use winapi::{
     },
     um::{
         winnt::LONG,
-        winuser::{SetWinEventHook, UnhookWinEvent, GetWindowThreadProcessId},
+        winuser::{GetWindowThreadProcessId, SetWinEventHook, UnhookWinEvent},
     },
 };
 
-use crate::{message_loop::run_dummy_message_loop, raw_event, RawWindowEvent, WindowEvent, RawWindowHandle};
+use crate::{
+    message_loop::run_dummy_message_loop, raw_event, RawWindowEvent, RawWindowHandle, WindowEvent,
+};
 
 thread_local! {
     static HOOK_EVENT_TX: OnceCell<(tokio::sync::mpsc::UnboundedSender<WindowEvent>, EventPredicate)> = OnceCell::new();
@@ -219,9 +221,7 @@ impl EventFilter {
     #[must_use]
     pub fn window(self, window: RawWindowHandle) -> Self {
         let window_info = WindowThreadProcess::from_handle(window);
-        self
-            .thread(window_info.thread)
-            .process(window_info.process)
+        self.thread(window_info.thread).process(window_info.process)
     }
 
     /// Include events from all processes.
@@ -262,7 +262,10 @@ impl WindowThreadProcess {
         let mut process_id = MaybeUninit::uninit();
         let thread_id = unsafe { GetWindowThreadProcessId(window, process_id.as_mut_ptr()) };
         let process_id = unsafe { process_id.assume_init() };
-        Self::new(NonZeroU32::new(process_id).unwrap(), NonZeroU32::new(thread_id).unwrap())
+        Self::new(
+            NonZeroU32::new(process_id).unwrap(),
+            NonZeroU32::new(thread_id).unwrap(),
+        )
     }
 }
 
