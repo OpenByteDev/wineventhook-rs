@@ -185,7 +185,7 @@ pub enum WindowEventType {
     UiaPropertyChange(i32),
     /// An event pertaining to a situation specific to objects within one application.
     Object(MaybeKnown<ObjectWindowEvent>),
-    /// An event that was allocated at runtime through the UI Automation extensibility API using [`GlobalAddAtom`](https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-globaladdatom).
+    /// An event that was allocated at runtime through the UI Automation extensibility API using [`GlobalAddAtom`](https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globaladdatoma).
     Atom(i32),
     /// An event defined by Accessibility Interoperability Alliance (AIA) specifications.
     Aia(i32),

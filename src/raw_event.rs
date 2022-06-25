@@ -330,7 +330,7 @@ pub fn all_object() -> Range<i32> {
 /// Returns the range of reserved for ATOM events.
 /// The ATOM range is reserved for event IDs that are allocated at runtime through the UI Automation extensibility API.
 /// Do not use the values from the ATOM range for any other purpose.
-/// Using the GlobalAddAtom function with a string GUID is the recommended method of allocating WinEvents from the ATOM range.
+/// Using the [`GlobalAddAtom`](https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globaladdatoma) function with a string GUID is the recommended method of allocating WinEvents from the ATOM range.
 #[must_use]
 pub fn all_atom() -> Range<i32> {
     Range {
