@@ -1,7 +1,7 @@
 use std::{
     fmt::{self, Debug},
     ptr::NonNull,
-    time::{Duration, Instant},
+    time::{Duration, Instant, SystemTime},
 };
 
 use num_enum::{IntoPrimitive, TryFromPrimitive};
@@ -123,7 +123,15 @@ impl WindowEvent {
     pub fn timestamp(&self) -> Instant {
         let time_since_system_start = Duration::from_millis(unsafe { GetTickCount() as u64 });
         let event_time_relative_to_system_start = Duration::from_millis(self.raw.timestamp as u64);
-        Instant::now() - time_since_system_start + event_time_relative_to_system_start
+        let now = Instant::now();
+        let system_start_instant = now
+            .checked_sub(time_since_system_start)
+            .unwrap_or_else(|| {
+                // use unix epoch if Instant underflows, should never happen.
+                let time_since_unix_epoch = SystemTime::UNIX_EPOCH.elapsed().unwrap();
+                now.checked_sub(time_since_unix_epoch).unwrap()
+            });
+        system_start_instant + event_time_relative_to_system_start
     }
 }
 
