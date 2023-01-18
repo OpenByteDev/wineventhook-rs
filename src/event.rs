@@ -124,13 +124,11 @@ impl WindowEvent {
         let time_since_system_start = Duration::from_millis(unsafe { GetTickCount() as u64 });
         let event_time_relative_to_system_start = Duration::from_millis(self.raw.timestamp as u64);
         let now = Instant::now();
-        let system_start_instant = now
-            .checked_sub(time_since_system_start)
-            .unwrap_or_else(|| {
-                // use unix epoch if Instant underflows, should never happen.
-                let time_since_unix_epoch = SystemTime::UNIX_EPOCH.elapsed().unwrap();
-                now.checked_sub(time_since_unix_epoch).unwrap()
-            });
+        let system_start_instant = now.checked_sub(time_since_system_start).unwrap_or_else(|| {
+            // use unix epoch if Instant underflows, should never happen.
+            let time_since_unix_epoch = SystemTime::UNIX_EPOCH.elapsed().unwrap();
+            now.checked_sub(time_since_unix_epoch).unwrap()
+        });
         system_start_instant + event_time_relative_to_system_start
     }
 }
