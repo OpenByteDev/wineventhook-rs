@@ -1,6 +1,4 @@
-use std::{fmt::Debug, hash::Hash, io, mem::MaybeUninit, num::NonZeroU32, ops::Range, ptr};
-
-use once_cell::unsync::OnceCell;
+use std::{fmt::Debug, hash::Hash, io, mem::MaybeUninit, num::NonZeroU32, ops::Range, ptr, cell::OnceCell};
 
 use winapi::{
     shared::{
