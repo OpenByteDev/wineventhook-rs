@@ -83,7 +83,7 @@ impl WindowEventHook {
                         Some(win_event_hook_callback),
                         filter.process_id,
                         filter.thread_id,
-                        flags.bits,
+                        flags.bits(),
                     )
                 };
 
