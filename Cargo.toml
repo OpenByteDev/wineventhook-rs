@@ -14,14 +14,14 @@ keywords = ["window", "event", "hook", "UnhookWinEvent", "SetWinEventHook"]
 
 [dependencies]
 winapi = { version = "0.3", features = ["winuser", "winbase", "sysinfoapi"], default-features = false }
-num_enum = { version = "0.6", default-features = false }
-bitflags = { version = "2.3", default-features = false }
+num_enum = { version = "0.7", default-features = false }
+bitflags = { version = "2.4", default-features = false }
 async-thread = { version = "0.1", default-features = false }
 cstr = { version = "0.2", default-features = false }
-tokio = { version = "1.29", features = ["sync"], default-features = false }
+tokio = { version = "1.36", features = ["sync"], default-features = false }
 
 [dev-dependencies]
-tokio = { version = "1.29", features = ["rt", "rt-multi-thread", "macros"], default-features = false }
+tokio = { version = "1.36", features = ["rt", "rt-multi-thread", "macros"], default-features = false }
 winapi = { version = "0.3", features = ["errhandlingapi"], default-features = false }
 
 [package.metadata.docs.rs]
