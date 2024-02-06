@@ -1,4 +1,6 @@
-use std::{fmt::Debug, hash::Hash, io, mem::MaybeUninit, num::NonZeroU32, ops::Range, ptr, cell::OnceCell};
+use std::{
+    cell::OnceCell, fmt::Debug, hash::Hash, io, mem::MaybeUninit, num::NonZeroU32, ops::Range, ptr,
+};
 
 use winapi::{
     shared::{
