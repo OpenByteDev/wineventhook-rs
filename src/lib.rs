@@ -23,7 +23,7 @@
 
 //! A rusty wrapper over the window event API specifically [`SetWinEventHook`](https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwineventhook) and [`UnhookWinEvent`](https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-unhookwinevent).
 //!
-//! For the type of events that can be hooked, see [`WindowEvent`](crate::WindowEvent).
+//! For the type of events that can be hooked, see [`WindowEvent`].
 //!
 //! # Example
 //! This example shows how to listen for all window events and print them to the console.
