@@ -17,7 +17,6 @@ winapi = { version = "0.3", features = ["winuser", "winbase", "sysinfoapi"], def
 num_enum = { version = "0.7", default-features = false }
 bitflags = { version = "2.9", default-features = false }
 async-thread = { version = "0.1", default-features = false }
-cstr = { version = "0.2", default-features = false }
 tokio = { version = "1.45", features = ["sync"], default-features = false }
 derive_destructure2 = { version = "0.1", default-features = false }
 

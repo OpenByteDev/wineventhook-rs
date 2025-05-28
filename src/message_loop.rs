@@ -58,7 +58,7 @@ impl MessageOnlyWindow {
         let handle = unsafe {
             CreateWindowExA(
                 0,
-                cstr::cstr!("STATIC").as_ptr().cast(), // pre-defined window class for buttons and other ui elements
+                c"STATIC".as_ptr().cast(), // pre-defined window class for buttons and other ui elements
                 ptr::null_mut(),
                 0,
                 0,
