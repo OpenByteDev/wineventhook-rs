@@ -21,14 +21,13 @@ jobs:
         os: ["windows-latest"]
         target: ["x86_64-pc-windows-msvc", "x86_64-pc-windows-gnu", "i686-pc-windows-msvc"]
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v6
     
     - name: Install latest rust ${{ matrix.toolchain }} for ${{ matrix.target }}
-      uses: actions-rs/toolchain@v1
+    - uses: dtolnay/rust-toolchain@master
       with:
           target: ${{ matrix.target }}
           toolchain: ${{ matrix.toolchain }}
-          override: true
       
     - name: Build
       run: cargo build --target ${{ matrix.target }} --all-targets
@@ -37,34 +36,36 @@ jobs:
       run: cargo test --target ${{ matrix.target }} --all-targets --all-features -- --nocapture
 
   documentation:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: ["windows-latest"]
+    runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Install latest nightly
-      uses: actions-rs/toolchain@v1
-      with:
-          profile: minimal
-          toolchain: nightly
-          override: true
-    - name: Generate documentation
-      run: cargo doc --all-features
+      - uses: actions/checkout@v6
+      - name: Install latest beta
+        uses: dtolnay/rust-toolchain@beta
+      - name: Generate documentation
+        run: cargo doc --all-features
+      - name: Install cargo-deadlinks
+        run: cargo install cargo-deadlinks
+      - name: Check dead links in doc
+        run: cargo deadlinks
 
   clippy:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: ["windows-latest"]
+    runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v1
-      - uses: actions-rs/toolchain@v1
+      - uses: actions/checkout@v6
+      - name: Install latest beta
+        uses: dtolnay/rust-toolchain@beta
         with:
-            toolchain: nightly
-            components: clippy
-            override: true
-      - uses: actions-rs/clippy-check@v1
+          components: clippy
+      - name: Clippy check
+        run: cargo clippy --all-features
+        
+  fmt:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install latest beta
+        uses: dtolnay/rust-toolchain@beta
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          args: --all-features
+            components: rustfmt
+      - name: Format check
+        run: cargo fmt --all -- --check
