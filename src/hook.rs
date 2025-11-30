@@ -14,7 +14,7 @@ use winapi::{
 };
 
 use crate::{
-    message_loop::run_dummy_message_loop, raw_event, RawWindowEvent, RawWindowHandle, WindowEvent,
+    RawWindowEvent, RawWindowHandle, WindowEvent, message_loop::run_dummy_message_loop, raw_event,
 };
 
 thread_local! {
@@ -89,15 +89,15 @@ impl WindowEventHook {
                     )
                 };
 
-                let hook_result = if !hook.is_null() {
+                let hook_result = if hook.is_null() {
+                    Err(io::Error::last_os_error())
+                } else {
                     HOOK_EVENT_TX.with(|tx| {
                         tx.set((event_tx, filter.predicate.get()))
                             .map_err(|_| ())
                             .unwrap();
                     });
                     Ok(())
-                } else {
-                    Err(io::Error::last_os_error())
                 };
 
                 handle_tx.send(hook_result).unwrap();
@@ -113,7 +113,7 @@ impl WindowEventHook {
             })
             .unwrap();
 
-        handle_rx.await.unwrap().map(|_| Self {
+        handle_rx.await.unwrap().map(|()| Self {
             abort_tx,
             event_thread,
         })
@@ -139,7 +139,7 @@ impl EventPredicateHolder {
     fn set(&mut self, predicate: EventPredicate) {
         self.0 = Some(predicate);
     }
-    fn get(&self) -> EventPredicate {
+    fn get(self) -> EventPredicate {
         self.0.unwrap_or(|_| true)
     }
 }

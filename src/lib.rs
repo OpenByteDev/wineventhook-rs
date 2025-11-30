@@ -5,6 +5,7 @@
     missing_debug_implementations,
     missing_copy_implementations,
     rust_2018_idioms,
+    clippy::pedantic,
     clippy::todo,
     clippy::manual_assert,
     clippy::must_use_candidate,
@@ -18,7 +19,12 @@
     clippy::module_inception,
     clippy::module_name_repetitions,
     clippy::missing_errors_doc,
-    clippy::borrow_as_ptr
+    clippy::borrow_as_ptr,
+    clippy::cast_sign_loss,
+    clippy::missing_panics_doc,
+    clippy::doc_markdown,
+    clippy::cast_possible_wrap,
+    clippy::cast_possible_truncation
 )]
 
 //! A rusty wrapper over the window event API specifically [`SetWinEventHook`](https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwineventhook) and [`UnhookWinEvent`](https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-unhookwinevent).

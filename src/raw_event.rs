@@ -1,7 +1,7 @@
 use std::ops::Range;
 
 /// The lowest possible event value.
-pub const MIN: i32 = 0x00000001;
+pub const MIN: i32 = 0x0000_0001;
 
 /// The lowest system event value.
 pub const SYSTEM_START: i32 = 0x0001;
@@ -256,7 +256,7 @@ pub const AIA_END: i32 = 0xAFFF;
 pub const ATOM_END: i32 = 0xFFFF;
 
 /// The highest possible event value.
-pub const MAX: i32 = 0x7FFFFFFF;
+pub const MAX: i32 = 0x7FFF_FFFF;
 
 /// Returns the range of all event values.
 #[must_use]
