@@ -156,7 +156,7 @@ pub enum AccessibleObjectId {
     NativeObjectModel = -16,
     /// The window's menu bar.
     Menu = -3,
-    /// An object identifier that [`Oleacc.dll`] uses internally.
+    /// An object identifier that `Oleacc.dll` uses internally.
     /// For more information, see [Appendix F: Object Identifier Values for OBJID_QUERYCLASSNAMEIDX`](https://docs.microsoft.com/en-us/windows/win32/winauto/appendix-f--object-identifier-values-for-objid-queryclassnameidx).
     QueryClassNameIdx = -12,
     /// The window's size grip: an optional frame component located at the lower-right corner of the window frame.
