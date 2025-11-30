@@ -8,7 +8,7 @@ homepage = "https://github.com/OpenByteDev/wineventhook-rs"
 documentation = "https://docs.rs/wineventhook"
 license = "MIT"
 authors = ["OpenByte <development.openbyte@gmail.com>"]
-edition = "2021"
+edition = "2024"
 categories = ["os", "os::windows-apis", "accessibility"]
 keywords = ["window", "event", "hook", "UnhookWinEvent", "SetWinEventHook"]
 
