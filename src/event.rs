@@ -4,7 +4,7 @@ use std::{
     time::{Duration, Instant, SystemTime},
 };
 
-use num_enum::{IntoPrimitive, TryFromPrimitive};
+use num_enum::{FromPrimitive, IntoPrimitive};
 use winapi::{
     shared::{
         minwindef::DWORD,
@@ -99,7 +99,7 @@ impl WindowEvent {
 
     /// Returns the type of object associated with the event.
     #[must_use]
-    pub fn object_type(&self) -> MaybeKnown<AccessibleObjectId> {
+    pub fn object_type(&self) -> AccessibleObjectId {
         self.raw.object_id.into()
     }
 
@@ -134,7 +134,7 @@ impl WindowEvent {
 }
 
 #[derive(
-    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, IntoPrimitive, TryFromPrimitive,
+    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, IntoPrimitive, FromPrimitive,
 )]
 #[repr(i32)]
 /// The type of object associated with a window event.
@@ -172,6 +172,10 @@ pub enum AccessibleObjectId {
     VerticalScroll = -5,
     /// The window itself rather than a child object.
     Window = 0,
+
+    /// Unknown object id
+    #[num_enum(catch_all)]
+    Other(i32),
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -180,17 +184,17 @@ pub enum AccessibleObjectId {
 /// See [Event Constants](https://docs.microsoft.com/en-us/windows/win32/winauto/event-constants), [System-Level and Object-Level Events](https://docs.microsoft.com/en-us/windows/win32/winauto/system-level-and-object-level-events) and [Allocation of WinEvent IDs](https://docs.microsoft.com/en-us/windows/win32/winauto/allocation-of-winevent-ids) for more information.
 pub enum WindowEventType {
     /// An event describing a situation affecting all applications in the system.
-    System(MaybeKnown<SystemWindowEvent>),
+    System(SystemWindowEvent),
     /// An event describing an OEM defined event.
     OemDefined(i32),
     /// An event indicating a change in a console window.
-    Console(MaybeKnown<ConsoleWindowEvent>),
+    Console(ConsoleWindowEvent),
     /// An UI Automation event.
     UiaEvent(i32),
     /// An Ui Automation property change event.
     UiaPropertyChange(i32),
     /// An event pertaining to a situation specific to objects within one application.
-    Object(MaybeKnown<ObjectWindowEvent>),
+    Object(ObjectWindowEvent),
     /// An event that was allocated at runtime through the UI Automation extensibility API using [`GlobalAddAtom`](https://docs.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-globaladdatoma).
     Atom(i32),
     /// An event defined by Accessibility Interoperability Alliance (AIA) specifications.
@@ -203,11 +207,11 @@ pub enum WindowEventType {
 impl From<i32> for WindowEventType {
     fn from(number: i32) -> Self {
         if raw_event::all_system().contains(&number) {
-            Self::System(MaybeKnown::from(number))
+            Self::System(SystemWindowEvent::from(number))
         } else if raw_event::all_console().contains(&number) {
-            Self::Console(MaybeKnown::from(number))
+            Self::Console(ConsoleWindowEvent::from(number))
         } else if raw_event::all_object().contains(&number) {
-            Self::Object(MaybeKnown::from(number))
+            Self::Object(ObjectWindowEvent::from(number))
         } else if raw_event::all_atom().contains(&number) {
             Self::Atom(number)
         } else if raw_event::all_aia().contains(&number) {
@@ -224,95 +228,8 @@ impl From<i32> for WindowEventType {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-/// A struct represting an event in a reserved range that may be a known common event or an unknown new or custom event.
-pub enum MaybeKnown<T> {
-    /// A known common event.
-    Known(T),
-    /// An unknown new or custom event.
-    Unknown(i32),
-}
-
-impl<T> MaybeKnown<T> {
-    /// Returns `true` if the event is known.
-    #[must_use]
-    pub fn is_known(&self) -> bool {
-        matches!(self, Self::Known(_))
-    }
-
-    /// Returns `true` if the event is unknown.
-    #[must_use]
-    pub fn is_unknown(&self) -> bool {
-        matches!(self, Self::Unknown(_))
-    }
-
-    /// Returns the event if it is known.
-    #[must_use]
-    pub fn known(&self) -> Option<&T> {
-        match self {
-            Self::Known(value) => Some(value),
-            _ => None,
-        }
-    }
-
-    /// Returns the code of the event if it is unknown.
-    #[must_use]
-    pub fn unknown(&self) -> Option<i32> {
-        match self {
-            Self::Unknown(value) => Some(*value),
-            _ => None,
-        }
-    }
-}
-
-impl<T> MaybeKnown<T>
-where
-    T: Into<i32>,
-{
-    /// Returns the underlying event code.
-    pub fn code(self) -> i32 {
-        match self {
-            MaybeKnown::Known(value) => value.into(),
-            MaybeKnown::Unknown(value) => value,
-        }
-    }
-}
-
-impl<T> From<i32> for MaybeKnown<T>
-where
-    T: TryFrom<i32>,
-{
-    fn from(number: i32) -> Self {
-        match T::try_from(number) {
-            Ok(value) => Self::Known(value),
-            Err(_) => Self::Unknown(number),
-        }
-    }
-}
-
-impl<T> From<MaybeKnown<T>> for i32
-where
-    T: Into<i32>,
-{
-    fn from(value: MaybeKnown<T>) -> Self {
-        value.code()
-    }
-}
-
-impl<T> PartialEq<T> for MaybeKnown<T>
-where
-    T: PartialEq,
-{
-    fn eq(&self, other: &T) -> bool {
-        match self {
-            MaybeKnown::Known(value) => value == other,
-            MaybeKnown::Unknown(_) => false,
-        }
-    }
-}
-
 #[derive(
-    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, IntoPrimitive, TryFromPrimitive,
+    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, IntoPrimitive, FromPrimitive,
 )]
 #[repr(i32)]
 /// A known event describing a situation affecting all applications in the system.
@@ -388,10 +305,14 @@ pub enum SystemWindowEvent {
 
     /// The active desktop has been switched.
     DesktopSwitch = raw_event::SYSTEM_DESKTOPSWITCH,
+
+    /// Unknown event type
+    #[num_enum(catch_all)]
+    Other(i32),
 }
 
 #[derive(
-    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, IntoPrimitive, TryFromPrimitive,
+    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, IntoPrimitive, FromPrimitive,
 )]
 #[repr(i32)]
 #[allow(missing_docs)]
@@ -404,10 +325,14 @@ pub enum ConsoleWindowEvent {
     Layout = raw_event::CONSOLE_LAYOUT,
     StartApplication = raw_event::CONSOLE_START_APPLICATION,
     EndApplication = raw_event::CONSOLE_END_APPLICATION,
+
+    /// Unknown event type
+    #[num_enum(catch_all)]
+    Other(i32),
 }
 
 #[derive(
-    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, IntoPrimitive, TryFromPrimitive,
+    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, IntoPrimitive, FromPrimitive,
 )]
 #[repr(i32)]
 /// A known event indicating a change in a console window.
@@ -526,4 +451,8 @@ pub enum ObjectWindowEvent {
     /// The conversion target within an IME composition has changed.
     /// The conversion target is the subset of the IME composition which is actively selected as the target for user-initiated conversions.
     TextEditConversionTargetChanged = raw_event::OBJECT_TEXTEDIT_CONVERSIONTARGETCHANGED,
+
+    /// Unknown event type
+    #[num_enum(catch_all)]
+    Other(i32),
 }

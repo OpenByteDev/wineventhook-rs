@@ -66,8 +66,8 @@ mod tests {
     use winapi::um::processthreadsapi::GetCurrentThreadId;
 
     use crate::{
-        message_loop::MessageOnlyWindow, raw_event, AccessibleObjectId, EventFilter, MaybeKnown,
-        ObjectWindowEvent, WindowEventHook, WindowEventType,
+        AccessibleObjectId, EventFilter, ObjectWindowEvent, WindowEventHook, WindowEventType,
+        message_loop::MessageOnlyWindow, raw_event,
     };
 
     #[tokio::test]
@@ -87,16 +87,12 @@ mod tests {
         let window_thread_id = unsafe { GetCurrentThreadId() };
 
         while let Some(event) = event_rx.recv().await {
-            if event.event_type()
-                == WindowEventType::Object(MaybeKnown::Known(ObjectWindowEvent::Create))
+            if event.event_type() == WindowEventType::Object(ObjectWindowEvent::Create)
                 && event.thread_id() == window_thread_id
             {
                 assert_eq!(event.window_handle(), NonNull::new(window.handle()));
                 assert_eq!(event.child_id(), None);
-                assert_eq!(
-                    event.object_type(),
-                    MaybeKnown::Known(AccessibleObjectId::Window)
-                );
+                assert_eq!(event.object_type(), AccessibleObjectId::Window);
                 assert!(event.timestamp() <= Instant::now());
                 break;
             }

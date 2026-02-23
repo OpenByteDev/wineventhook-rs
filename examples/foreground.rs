@@ -11,7 +11,7 @@ use winapi::{
         winuser::{GetWindowTextLengthW, GetWindowTextW},
     },
 };
-use wineventhook::{raw_event, AccessibleObjectId, EventFilter, WindowEventHook};
+use wineventhook::{AccessibleObjectId, EventFilter, WindowEventHook, raw_event};
 
 #[tokio::main]
 async fn main() {
