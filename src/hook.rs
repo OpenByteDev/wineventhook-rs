@@ -1,8 +1,22 @@
 use std::{
-    cell::OnceCell, ffi::{c_long, c_ulong}, fmt::Debug, hash::Hash, io, mem::MaybeUninit, num::NonZeroU32, ops::Range, ptr
+    cell::OnceCell,
+    ffi::{c_long, c_ulong},
+    fmt::Debug,
+    hash::Hash,
+    io,
+    mem::MaybeUninit,
+    num::NonZeroU32,
+    ops::Range,
+    ptr,
 };
 
-use windows_sys::Win32::{Foundation::{FALSE, HWND}, UI::{Accessibility::{HWINEVENTHOOK, SetWinEventHook, UnhookWinEvent}, WindowsAndMessaging::GetWindowThreadProcessId}};
+use windows_sys::Win32::{
+    Foundation::{FALSE, HWND},
+    UI::{
+        Accessibility::{HWINEVENTHOOK, SetWinEventHook, UnhookWinEvent},
+        WindowsAndMessaging::GetWindowThreadProcessId,
+    },
+};
 
 use crate::{
     RawWindowEvent, RawWindowHandle, WindowEvent, message_loop::run_dummy_message_loop, raw_event,

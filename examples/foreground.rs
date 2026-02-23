@@ -4,7 +4,10 @@ use std::{
     ptr::{self, NonNull},
 };
 
-use windows_sys::Win32::{Foundation::{GetLastError, HWND, SetLastError}, UI::WindowsAndMessaging::{GetWindowTextLengthW, GetWindowTextW}};
+use windows_sys::Win32::{
+    Foundation::{GetLastError, HWND, SetLastError},
+    UI::WindowsAndMessaging::{GetWindowTextLengthW, GetWindowTextW},
+};
 use wineventhook::{AccessibleObjectId, EventFilter, WindowEventHook, raw_event};
 
 #[tokio::main]

@@ -1,9 +1,16 @@
 use std::{
-    ffi::{c_long, c_ulong, c_void}, fmt::{self, Debug}, ptr::NonNull, time::{Duration, Instant, SystemTime}
+    ffi::{c_long, c_ulong, c_void},
+    fmt::{self, Debug},
+    ptr::NonNull,
+    time::{Duration, Instant, SystemTime},
 };
 
 use num_enum::{FromPrimitive, IntoPrimitive};
-use windows_sys::Win32::{Foundation::HWND, System::SystemInformation::GetTickCount, UI::{Accessibility::HWINEVENTHOOK, WindowsAndMessaging}};
+use windows_sys::Win32::{
+    Foundation::HWND,
+    System::SystemInformation::GetTickCount,
+    UI::{Accessibility::HWINEVENTHOOK, WindowsAndMessaging},
+};
 
 use crate::raw_event;
 
