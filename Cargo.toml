@@ -19,13 +19,13 @@ windows-sys = { version = ">=0.59, <=0.61", features = [
     "Win32_System_SystemInformation"
 ], default-features = false }
 num_enum = { version = "0.7", default-features = false }
-bitflags = { version = "2.10", default-features = false }
+bitflags = { version = "2.11", default-features = false }
 async-thread = { version = "0.1", default-features = false }
-tokio = { version = "1.48", features = ["sync"], default-features = false }
+tokio = { version = "1.49", features = ["sync"], default-features = false }
 derive_destructure2 = { version = "0.1", default-features = false }
 
 [dev-dependencies]
-tokio = { version = "1.48", features = ["rt", "rt-multi-thread", "macros"], default-features = false }
+tokio = { version = "1.49", features = ["rt", "rt-multi-thread", "macros"], default-features = false }
 windows-sys = { version = ">=0.59, <=0.61", features = ["Win32_System_Threading"], default-features = false }
 
 [package.metadata.docs.rs]
