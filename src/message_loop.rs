@@ -9,8 +9,8 @@ use winapi::{
     um::{
         winbase::WAIT_FAILED,
         winuser::{
-            CreateWindowExA, DestroyWindow, MsgWaitForMultipleObjects, PeekMessageW, HWND_MESSAGE,
-            MSG, PM_REMOVE, QS_ALLEVENTS,
+            CreateWindowExA, DestroyWindow, HWND_MESSAGE, MSG, MsgWaitForMultipleObjects,
+            PM_REMOVE, PeekMessageW, QS_ALLEVENTS,
         },
     },
 };
@@ -84,12 +84,12 @@ impl MessageOnlyWindow {
     }
 
     pub fn destroy(mut self) -> io::Result<()> {
-        let result = unsafe { self._destroy() };
+        let result = unsafe { self.destroy_core() };
         mem::forget(self);
         result
     }
 
-    unsafe fn _destroy(&mut self) -> io::Result<()> {
+    unsafe fn destroy_core(&mut self) -> io::Result<()> {
         let result = unsafe { DestroyWindow(self.handle()) };
 
         if result == 0 {
@@ -102,7 +102,7 @@ impl MessageOnlyWindow {
 
 impl Drop for MessageOnlyWindow {
     fn drop(&mut self) {
-        let result = unsafe { self._destroy() };
+        let result = unsafe { self.destroy_core() };
         debug_assert!(
             result.is_ok(),
             "MessageOnlyWindow::destroy() failed with {:?}",

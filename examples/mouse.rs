@@ -1,7 +1,7 @@
 use std::{io, mem::MaybeUninit};
 
 use winapi::um::winuser::GetCursorPos;
-use wineventhook::{raw_event, AccessibleObjectId, EventFilter, WindowEventHook};
+use wineventhook::{AccessibleObjectId, EventFilter, WindowEventHook, raw_event};
 
 #[tokio::main]
 async fn main() {
