@@ -1,6 +1,6 @@
 use std::{io, mem::MaybeUninit};
 
-use winapi::um::winuser::GetCursorPos;
+use windows_sys::Win32::UI::WindowsAndMessaging::GetCursorPos;
 use wineventhook::{AccessibleObjectId, EventFilter, WindowEventHook, raw_event};
 
 #[tokio::main]

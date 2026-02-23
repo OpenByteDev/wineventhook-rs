@@ -1,17 +1,8 @@
 use std::{
-    cell::OnceCell, fmt::Debug, hash::Hash, io, mem::MaybeUninit, num::NonZeroU32, ops::Range, ptr,
+    cell::OnceCell, ffi::{c_long, c_ulong}, fmt::Debug, hash::Hash, io, mem::MaybeUninit, num::NonZeroU32, ops::Range, ptr
 };
 
-use winapi::{
-    shared::{
-        minwindef::{DWORD, FALSE},
-        windef::{HWINEVENTHOOK, HWND},
-    },
-    um::{
-        winnt::LONG,
-        winuser::{GetWindowThreadProcessId, SetWinEventHook, UnhookWinEvent},
-    },
-};
+use windows_sys::Win32::{Foundation::{FALSE, HWND}, UI::{Accessibility::{HWINEVENTHOOK, SetWinEventHook, UnhookWinEvent}, WindowsAndMessaging::GetWindowThreadProcessId}};
 
 use crate::{
     RawWindowEvent, RawWindowHandle, WindowEvent, message_loop::run_dummy_message_loop, raw_event,
@@ -23,12 +14,12 @@ thread_local! {
 
 extern "system" fn win_event_hook_callback(
     hook: HWINEVENTHOOK,
-    event: DWORD,
+    event: c_ulong,
     h_wnd: HWND,
-    id_object: LONG,
-    id_child: LONG,
-    event_thread: DWORD,
-    event_time: DWORD,
+    id_object: c_long,
+    id_child: c_long,
+    event_thread: c_ulong,
+    event_time: c_ulong,
 ) {
     HOOK_EVENT_TX.with(|event_tx| {
         if let Some((event_tx, predicate)) = event_tx.get() {

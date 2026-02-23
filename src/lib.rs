@@ -69,7 +69,7 @@ pub use hook::*;
 mod tests {
     use std::{ptr::NonNull, time::Instant};
 
-    use winapi::um::processthreadsapi::GetCurrentThreadId;
+    use windows_sys::Win32::System::Threading::GetCurrentThreadId;
 
     use crate::{
         AccessibleObjectId, EventFilter, ObjectWindowEvent, WindowEventHook, WindowEventType,

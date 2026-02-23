@@ -1,19 +1,7 @@
 use std::{io, mem, ptr, time::Duration};
 
 use tokio::sync::oneshot;
-use winapi::{
-    shared::{
-        minwindef::FALSE,
-        windef::{HWND, POINT},
-    },
-    um::{
-        winbase::WAIT_FAILED,
-        winuser::{
-            CreateWindowExA, DestroyWindow, HWND_MESSAGE, MSG, MsgWaitForMultipleObjects,
-            PM_REMOVE, PeekMessageW, QS_ALLEVENTS,
-        },
-    },
-};
+use windows_sys::Win32::{Foundation::{FALSE, HWND, POINT, WAIT_FAILED}, UI::WindowsAndMessaging::{CreateWindowExA, DestroyWindow, HWND_MESSAGE, MSG, MsgWaitForMultipleObjects, PM_REMOVE, PeekMessageW, QS_ALLEVENTS}};
 
 pub fn run_dummy_message_loop(mut abort_receiver: oneshot::Receiver<()>) -> io::Result<()> {
     let window = MessageOnlyWindow::new()?;
